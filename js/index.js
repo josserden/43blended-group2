@@ -1,27 +1,27 @@
-const users = [
+let users = [
   {
     address: {
       geolocation: {
         lat: '-37.3159',
         long: '81.1496',
       },
-      city: 'kilcoole', //TODO
+      city: 'kilcoole',
       street: 'new road',
       number: 7682,
       zipcode: '12926-3874',
     },
 
     id: 1,
-    email: 'john@gmail.com', // TODO
-    username: 'johnd', //TODO
-    password: 'm38rmF$', //TODO
+    email: 'john@gmail.com',
+    username: 'johnd',
+    password: 'm38rmF$',
 
     name: {
-      firstname: 'john', // TODO
-      lastname: 'doe', // TODO
+      firstname: 'john',
+      lastname: 'doe',
     },
 
-    phone: '1-570-236-7033', //TODO
+    phone: '1-570-236-7033',
     __v: 0,
   },
   {
@@ -223,3 +223,61 @@ const users = [
     __v: 0,
   },
 ];
+
+const listRef = document.querySelector('.list');
+
+const createMarkup = (object) => {
+  const {
+    name: { firstname, lastname },
+    username,
+    address: { city },
+    email,
+    phone,
+    id,
+  } = object;
+
+  return ` <li id="${id}" class="card col-6 col-sm-3 m-2 position-relative" >
+            <button type="button" class="btn-close position-absolute top-0 start-100 translate-middle bg-secondary" aria-label="Close"></button>
+            <div class="card-body">
+              <h5 class="card-title">${firstname} ${lastname}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">${username}</h6>
+
+              <p class="card-text">${city}</p>
+
+              <a href="mailto:" class="card-link">${email}</a>
+              <a href="tel:+" class="card-link">${phone}</a>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm">Toggle</button>
+          </li>`;
+};
+
+const renderMarkup = () => {
+  const markup = users.map((object) => createMarkup(object)).join('');
+  // const markup = users.map(createMarkup).join('');
+  // const markup = users.reduce((acc, object) => (acc += createMarkup(object)), '');
+
+  listRef.insertAdjacentHTML('beforeend', markup);
+};
+
+const deleteItem = (id) => {
+  return (users = users.filter((item) => id !== item.id));
+};
+
+renderMarkup();
+
+listRef.addEventListener('click', (event) => {
+  if (event.target.classList.contains('btn')) {
+    event.target.parentNode.classList.toggle('bg-warning');
+  }
+});
+
+listRef.addEventListener('click', (event) => {
+  if (event.target.classList.contains('btn-close')) {
+    listRef.innerHTML = '';
+
+    let idx = Number(event.target.parentNode.id);
+    deleteItem(idx);
+
+    renderMarkup();
+  }
+});
