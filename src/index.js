@@ -4,12 +4,17 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { showNotify } from './js/notification';
 import { renderMarkup } from './js/renderMarkup';
+import { saveToLS, getFromLS } from './js/helpers';
 
 const btn = document.querySelector('.js-btn');
 const list = document.querySelector('.js-list');
-const todos = [];
+let todos = [];
 
-btn.addEventListener('click', async () => {
+renderFromLS();
+btn.addEventListener('click', addTodo);
+list.addEventListener('click', toggleCompleted);
+
+async function addTodo() {
   const { value: text } = await Swal.fire({
     input: 'textarea',
     inputLabel: 'Message',
@@ -30,12 +35,12 @@ btn.addEventListener('click', async () => {
   };
 
   todos.push(todo);
+  saveToLS('todos', todos);
   renderMarkup(list, todos);
 
   showNotify('success', 'Your todo added! ');
-});
-
-list.addEventListener('click', event => {
+}
+function toggleCompleted(event) {
   const currentElement = event.target.parentNode.parentNode;
   const badge = event.target.parentNode.previousElementSibling;
 
@@ -49,4 +54,13 @@ list.addEventListener('click', event => {
 
     badge.textContent = 'done';
   }
-});
+}
+function renderFromLS() {
+  const parsedTodos = getFromLS('todos');
+
+  if (parsedTodos) {
+    todos = parsedTodos ? parsedTodos : [];
+  }
+
+  renderMarkup(list, todos);
+}

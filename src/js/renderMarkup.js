@@ -21,7 +21,6 @@ export const renderMarkup = (ref, todos) => {
         <input
           class="form-check-input"
           type="checkbox"
-          value=""
           id="flexCheckDefault"
         />
       </div>
